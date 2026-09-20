@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#c78f9d">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>CHAN Beauty Lounge</title>
 <style>
 :root{--pink:#c78f9d;--rose:#b97989;--ivory:#fbf6f2;--ink:#292526;--muted:#756b6d;--line:#eadfe0;--soft:#f4e7ea;--white:#fff;--green:#66876e;--red:#a85e66}
@@ -20,176 +20,55 @@ nav button{border:0;background:none;padding:8px 2px;color:var(--muted);font-size
 .row{display:flex;gap:8px;align-items:center}.row>*{flex:1}input,select,textarea{width:100%;padding:10px;border:1px solid #dcc9ce;border-radius:10px;background:#fff;margin:4px 0 9px;font-size:14px}textarea{min-height:75px}
 button.primary{background:var(--rose);color:#fff;border:0;border-radius:10px;padding:10px 13px;font-weight:bold}.secondary{background:#f1e2e6;color:var(--rose);border:0;border-radius:10px;padding:9px 12px}.danger{background:#faeeee;color:var(--red);border:0;border-radius:10px;padding:9px 12px}
 .item{padding:11px 0;border-bottom:1px solid #eee}.item:last-child{border-bottom:0}.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#f2e3e7;color:var(--rose);font-size:11px}
-.badge.completed{background:#e8f1e9;color:var(--green)}.badge.cancelled{background:#faeeee;color:var(--red)}
 .empty{text-align:center;color:var(--muted);padding:22px}.thumb{width:76px;height:76px;object-fit:cover;border-radius:10px;margin-top:6px;border:1px solid var(--line)}
 .target{height:10px;background:#eee;border-radius:20px;overflow:hidden}.target span{display:block;height:100%;background:var(--rose)}
-.statusbox{background:var(--soft);padding:10px;border-radius:10px;margin:8px 0}.statusbox label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}nav{position:static;max-width:1000px;margin:auto}main{padding-bottom:20px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
 </style>
 </head>
 <body>
 <header><div class="brand">CHAN Beauty Lounge</div><div class="tag">Enhancing Your Natural Beauty</div></header>
 <main id="app"></main><nav id="nav"></nav>
-
 <script>
 const KEY="CHAN_V3";
 const base={bookings:[],clients:[],income:[],expenses:[],products:[],target:10000,
 treatments:[["Deep Cleansing Facial",0],["Dermaplaning",0],["Microneedling",0],["Chemical Peel",0],["Ombre Brows",1500],["Brow Tint & Shape",0],["Brow Lamination",0],["Gel X Nails",0],["TDP / Infrared Session",0]]};
-
-let d=JSON.parse(localStorage.getItem(KEY)||"null")||base,page="home";
-
+let d=JSON.parse(localStorage.getItem(KEY)||"null")||base, page="home";
 function save(){localStorage.setItem(KEY,JSON.stringify(d));render()}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-function money(x){return "R "+Number(x||0).toFixed(2)}
-function td(){return new Date().toISOString().slice(0,10)}
-
-function nav(){
-let ns=[["home","⌂","Home"],["book","📅","Bookings"],["clients","👩","Clients"],["money","R","Money"],["stock","🧴","Stock"],["more","☰","More"]];
-document.getElementById("nav").innerHTML=ns.map(n=>`<button class="${page==n[0]?'active':''}" onclick="page='${n[0]}';render()">${n[1]}<br>${n[2]}</button>`).join("")
-}
-
-function render(){
-nav();
-let a=document.getElementById("app");
-({home,book:bookings,clients,money:moneyPage,stock,more}[page])(a)
-}
-
-function home(a){
-let ym=td().slice(0,7),
-inc=d.income.filter(x=>x.date?.slice(0,7)==ym).reduce((s,x)=>s+ +x.amount,0),
-ex=d.expenses.filter(x=>x.date?.slice(0,7)==ym).reduce((s,x)=>s+ +x.amount,0),
-today=d.bookings.filter(x=>x.date==td()),
-pct=Math.min(100,d.target?inc/d.target*100:0);
-
-a.innerHTML=`<h2>Welcome 💕</h2>
-<div class="grid">
-<div class="stat"><span class="label">Today's bookings</span><b>${today.length}</b></div>
-<div class="stat"><span class="label">Clients</span><b>${d.clients.length}</b></div>
-<div class="stat"><span class="label">Monthly income</span><b>${money(inc)}</b></div>
-<div class="stat"><span class="label">Monthly profit</span><b>${money(inc-ex)}</b></div>
-</div>
+function money(x){return "R "+Number(x||0).toFixed(2)} function td(){return new Date().toISOString().slice(0,10)}
+function nav(){let ns=[["home","⌂","Home"],["book","📅","Bookings"],["clients","👩","Clients"],["money","R","Money"],["stock","🧴","Stock"],["more","☰","More"]];
+document.getElementById("nav").innerHTML=ns.map(n=>`<button class="${page==n[0]?'active':''}" onclick="page='${n[0]}';render()">${n[1]}<br>${n[2]}</button>`).join("")}
+function render(){nav();let a=document.getElementById("app");({home,book:bookings,clients,money:moneyPage,stock,more}[page])(a)}
+function home(a){let ym=td().slice(0,7),inc=d.income.filter(x=>x.date?.slice(0,7)==ym).reduce((s,x)=>s+ +x.amount,0),ex=d.expenses.filter(x=>x.date?.slice(0,7)==ym).reduce((s,x)=>s+ +x.amount,0),today=d.bookings.filter(x=>x.date==td()),pct=Math.min(100,d.target?inc/d.target*100:0);
+a.innerHTML=`<h2>Welcome 💕</h2><div class="grid"><div class="stat"><span class="label">Today's bookings</span><b>${today.length}</b></div><div class="stat"><span class="label">Clients</span><b>${d.clients.length}</b></div><div class="stat"><span class="label">Monthly income</span><b>${money(inc)}</b></div><div class="stat"><span class="label">Monthly profit</span><b>${money(inc-ex)}</b></div></div>
 <div class="card"><div class="row"><h3>Monthly income target</h3><span>${money(inc)} / ${money(d.target)}</span></div><div class="target"><span style="width:${pct}%"></span></div></div>
 <div class="card"><h3>Today's appointments</h3>${today.length?today.map(x=>`<div class="item"><b>${esc(x.time)} ${esc(x.client)}</b><br><span class="small">${esc(x.treatment)} · ${money(x.price)} · ${esc(x.status)}</span></div>`).join(""):'<div class="empty">No appointments today.</div>'}</div>
-<div class="card"><h3>Quick actions</h3><div class="row"><button class="primary" onclick="page='book';render()">+ Booking</button><button class="secondary" onclick="page='money';render()">+ Income</button><button class="secondary" onclick="page='clients';render()">+ Client</button></div></div>`
-}
-
-function bookings(a){
-let opts=d.treatments.map(t=>`<option>${esc(t[0])}</option>`).join("");
-a.innerHTML=`<h2>Bookings</h2>
-<div class="card"><h3>New appointment</h3>
-<div class="row"><input id="bc" placeholder="Client name"><input id="bd" type="date" value="${td()}"><input id="bt" type="time"></div>
-<div class="row"><select id="btr">${opts}</select><input id="bp" type="number" step=".01" placeholder="Price (R)"><select id="bs"><option>Booked</option><option>Completed</option><option>Cancelled</option><option>No-show</option></select></div>
-<textarea id="bn" placeholder="Appointment notes"></textarea><button class="primary" onclick="addB()">Save booking</button></div>
-
-<div class="card">${d.bookings.length?d.bookings.slice().sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time)).map(x=>{
-let i=d.bookings.indexOf(x);
-return `<div class="item">
-<div class="row"><b>${esc(x.client)}</b><span class="badge ${x.status==="Completed"?"completed":x.status==="Cancelled"?"cancelled":""}">${esc(x.status)}</span></div>
-<span class="small">${esc(x.date)}${x.time?" "+esc(x.time):""} · ${esc(x.treatment)} · ${money(x.price)}</span>
-<div class="statusbox"><label>Appointment status</label>
-<select onchange="setBookingStatus(${i},this.value)">
-<option value="Booked" ${x.status==="Booked"?"selected":""}>Booked</option>
-<option value="Completed" ${x.status==="Completed"?"selected":""}>Completed</option>
-<option value="Cancelled" ${x.status==="Cancelled"?"selected":""}>Cancelled</option>
-<option value="No-show" ${x.status==="No-show"?"selected":""}>No-show</option>
-</select></div>
-${x.status==="Completed"?'<span class="small">✓ Income recorded automatically</span><br>':""}
-${x.notes?`<span class="small">${esc(x.notes)}</span><br>`:""}
-<button class="secondary" onclick="wa('${encodeURIComponent(x.client)}','${x.date}','${x.time}','${encodeURIComponent(x.treatment)}')">WhatsApp</button>
-<button class="danger" onclick="del('bookings',${i})">Delete</button>
-</div>`}).join(""):'<div class="empty">No bookings yet.</div>'}</div>`
-}
-
-function addB(){
-if(!bc.value||!bd.value)return alert("Enter client and date.");
-let x={id:"b_"+Date.now()+"_"+Math.random().toString(36).slice(2,8),client:bc.value,date:bd.value,time:bt.value,treatment:btr.value,price:+bp.value||0,status:bs.value,notes:bn.value};
-d.bookings.push(x);
-let c=d.clients.find(c=>c.name.toLowerCase()==x.client.toLowerCase());
-if(!c)d.clients.push({name:x.client,phone:"",notes:"",photos:[]});
-if(x.status==="Completed")addIncomeForBooking(x);
-save()
-}
-
-function setBookingStatus(i,status){
-let x=d.bookings[i];
-if(!x)return;
-if(!x.id)x.id="b_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
-x.status=status;
-if(status==="Completed")addIncomeForBooking(x);
-save()
-}
-
-function addIncomeForBooking(x){
-if(d.income.some(v=>v.bookingId===x.id))return;
-d.income.push({bookingId:x.id,date:x.date,client:x.client,treatment:x.treatment,amount:+x.price||0,payment:"Not specified"})
-}
-
-function wa(c,date,time,t){
-let m=encodeURIComponent(`Hi ${decodeURIComponent(c)} 💕 This is a reminder from CHAN Beauty Lounge of your appointment on ${date}${time?" at "+time:""} for ${decodeURIComponent(t)}. Please let me know if you need to reschedule. We look forward to seeing you!`);
-location.href="https://wa.me/?text="+m
-}
-
-function clients(a){
-a.innerHTML=`<h2>Clients</h2><div class="card"><h3>Add client</h3><div class="row"><input id="cn" placeholder="Name"><input id="cp" placeholder="WhatsApp / phone"></div><textarea id="co" placeholder="Notes / preferences"></textarea><button class="primary" onclick="addC()">Save client</button></div>
-<div class="card">${d.clients.length?d.clients.map((c,i)=>`<div class="item"><div class="row"><b>${esc(c.name)}</b><button class="secondary" onclick="clientDetail(${i})">Open</button></div><span class="small">${esc(c.phone||"No number")}</span></div>`).join(""):'<div class="empty">No clients yet.</div>'}</div>`
-}
-
+<div class="card"><h3>Quick actions</h3><div class="row"><button class="primary" onclick="page='book';render()">+ Booking</button><button class="secondary" onclick="page='money';render()">+ Income</button><button class="secondary" onclick="page='clients';render()">+ Client</button></div></div>`}
+function bookings(a){let opts=d.treatments.map(t=>`<option>${esc(t[0])}</option>`).join("");a.innerHTML=`<h2>Bookings</h2><div class="card"><h3>New appointment</h3><div class="row"><input id="bc" placeholder="Client name"><input id="bd" type="date" value="${td()}"><input id="bt" type="time"></div><div class="row"><select id="btr">${opts}</select><input id="bp" type="number" step=".01" placeholder="Price (R)"><select id="bs"><option>Booked</option><option>Completed</option><option>Cancelled</option><option>No-show</option></select></div><textarea id="bn" placeholder="Appointment notes"></textarea><button class="primary" onclick="addB()">Save booking</button></div>
+<div class="card">${d.bookings.length?d.bookings.slice().sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time)).map(x=>`<div class="item"><div class="row"><b>${esc(x.client)}</b><span class="badge">${esc(x.status)}</span></div><span class="small">${esc(x.date)} ${esc(x.time)} · ${esc(x.treatment)} · ${money(x.price)}</span><br>${x.notes?`<span class="small">${esc(x.notes)}</span><br>`:""}<button class="secondary" onclick="wa('${encodeURIComponent(x.client)}','${x.date}','${x.time}','${encodeURIComponent(x.treatment)}')">WhatsApp</button> <button class="danger" onclick="del('bookings',${d.bookings.indexOf(x)})">Delete</button></div>`).join(""):'<div class="empty">No bookings yet.</div>'}</div>`}
+function addB(){if(!bc.value||!bd.value)return alert("Enter client and date.");let x={client:bc.value,date:bd.value,time:bt.value,treatment:btr.value,price:+bp.value||0,status:bs.value,notes:bn.value};d.bookings.push(x);let c=d.clients.find(c=>c.name.toLowerCase()==x.client.toLowerCase());if(!c)d.clients.push({name:x.client,phone:"",notes:"",photos:[]});save()}
+function wa(c,date,time,t){let m=encodeURIComponent(`Hi ${decodeURIComponent(c)} 💕 This is a reminder from CHAN Beauty Lounge of your appointment on ${date}${time?" at "+time:""} for ${decodeURIComponent(t)}. Please let me know if you need to reschedule. We look forward to seeing you!`);location.href="https://wa.me/?text="+m}
+function clients(a){a.innerHTML=`<h2>Clients</h2><div class="card"><h3>Add client</h3><div class="row"><input id="cn" placeholder="Name"><input id="cp" placeholder="WhatsApp / phone"></div><textarea id="co" placeholder="Notes / preferences"></textarea><button class="primary" onclick="addC()">Save client</button></div><div class="card">${d.clients.length?d.clients.map((c,i)=>`<div class="item"><div class="row"><b>${esc(c.name)}</b><button class="secondary" onclick="clientDetail(${i})">Open</button></div><span class="small">${esc(c.phone||"No number")}</span></div>`).join(""):'<div class="empty">No clients yet.</div>'}</div>`}
 function addC(){if(!cn.value)return alert("Enter a name.");d.clients.push({name:cn.value,phone:cp.value,notes:co.value,photos:[]});save()}
-
-function clientDetail(i){
-let c=d.clients[i],hist=d.bookings.filter(x=>x.client.toLowerCase()==c.name.toLowerCase());
-document.getElementById("app").innerHTML=`<h2>${esc(c.name)}</h2><div class="card"><input id="cp2" value="${esc(c.phone||"")}" placeholder="Phone"><textarea id="co2">${esc(c.notes||"")}</textarea><button class="primary" onclick="d.clients[${i}].phone=cp2.value;d.clients[${i}].notes=co2.value;save()">Save details</button></div>
-<div class="card"><h3>Treatment history</h3>${hist.length?hist.map(x=>`<div class="item">${esc(x.date)} · ${esc(x.treatment)} · ${money(x.price)} · ${esc(x.status)}</div>`).join(""):'<div class="empty">No treatment history.</div>'}</div>
-<button class="danger" onclick="del('clients',${i})">Delete client</button> <button class="secondary" onclick="page='clients';render()">Back</button>`
-}
-
-function moneyPage(a){
-let inc=d.income.reduce((s,x)=>s+ +x.amount,0),ex=d.expenses.reduce((s,x)=>s+ +x.amount,0);
-a.innerHTML=`<h2>Money</h2><div class="grid"><div class="stat"><span class="label">Income</span><b>${money(inc)}</b></div><div class="stat"><span class="label">Expenses</span><b>${money(ex)}</b></div><div class="stat"><span class="label">Profit</span><b>${money(inc-ex)}</b></div><div class="stat"><span class="label">Receipts</span><b>${d.expenses.filter(x=>x.receipt).length}</b></div></div>
+function clientDetail(i){let c=d.clients[i];let hist=d.bookings.filter(x=>x.client.toLowerCase()==c.name.toLowerCase());document.getElementById("app").innerHTML=`<h2>${esc(c.name)}</h2><div class="card"><input id="cp2" value="${esc(c.phone||"")}" placeholder="Phone"><textarea id="co2">${esc(c.notes||"")}</textarea><button class="primary" onclick="d.clients[${i}].phone=cp2.value;d.clients[${i}].notes=co2.value;save()">Save details</button></div><div class="card"><h3>Treatment history</h3>${hist.length?hist.map(x=>`<div class="item">${esc(x.date)} · ${esc(x.treatment)} · ${money(x.price)}</div>`).join(""):'<div class="empty">No treatment history.</div>'}</div><button class="danger" onclick="del('clients',${i})">Delete client</button> <button class="secondary" onclick="page='clients';render()">Back</button>`}
+function moneyPage(a){let inc=d.income.reduce((s,x)=>s+ +x.amount,0),ex=d.expenses.reduce((s,x)=>s+ +x.amount,0);a.innerHTML=`<h2>Money</h2><div class="grid"><div class="stat"><span class="label">Income</span><b>${money(inc)}</b></div><div class="stat"><span class="label">Expenses</span><b>${money(ex)}</b></div><div class="stat"><span class="label">Profit</span><b>${money(inc-ex)}</b></div><div class="stat"><span class="label">Receipts</span><b>${d.expenses.filter(x=>x.receipt).length}</b></div></div>
 <div class="two"><div class="card"><h3>Add income</h3><input id="id" type="date" value="${td()}"><input id="ic" placeholder="Client"><input id="it" placeholder="Treatment"><div class="row"><input id="ia" type="number" step=".01" placeholder="Amount"><select id="ip"><option>Cash</option><option>EFT</option><option>Card</option><option>Other</option></select></div><button class="primary" onclick="addI()">Save income</button></div>
 <div class="card"><h3>Add expense + receipt</h3><input id="ed" type="date" value="${td()}"><input id="ec" placeholder="Category (e.g. Products)"><input id="ee" placeholder="Description / supplier"><input id="ea" type="number" step=".01" placeholder="Amount"><label class="small">Invoice / receipt photo or PDF</label><input id="er" type="file" accept="image/*,application/pdf" capture="environment"><button class="primary" onclick="addE()">Save expense</button></div></div>
-<div class="card"><h3>Expenses & receipts</h3>${d.expenses.length?d.expenses.slice().reverse().map(x=>`<div class="item"><b>${money(x.amount)} · ${esc(x.category||"Other")}</b><br><span class="small">${esc(x.date)} · ${esc(x.description||"")}</span><br>${x.receipt?`<button class="secondary" onclick="viewReceipt(${d.expenses.indexOf(x)})">View receipt</button>`:`<span class="small">No receipt attached</span>`} <button class="danger" onclick="del('expenses',${d.expenses.indexOf(x)})">Delete</button></div>`).join(""):'<div class="empty">No expenses yet.</div>'}</div>
-<div class="card"><h3>Income</h3>${d.income.slice().reverse().slice(0,30).map(x=>`<div class="item"><b>${money(x.amount)}</b><br><span class="small">${esc(x.date)} · ${esc(x.client||"")} · ${esc(x.treatment||"")} · ${esc(x.payment||"")}</span></div>`).join("")||'<div class="empty">No income yet.</div>'}</div>`
-}
-
-function addI(){if(!ia.value)return alert("Enter amount.");d.income.push({date:id.value,client:ic.value,treatment:it.value,amount:+ia.value,payment:ip.value});save()}
-
-function addE(){
-if(!ea.value)return alert("Enter amount.");
-let f=er.files[0],x={date:ed.value,category:ec.value,description:ee.value,amount:+ea.value,receipt:null};
-if(f){let r=new FileReader();r.onload=()=>{x.receipt={name:f.name,type:f.type,data:r.result};d.expenses.push(x);save()};r.readAsDataURL(f)}
-else{d.expenses.push(x);save()}
-}
-
-function viewReceipt(i){
-let r=d.expenses[i].receipt;if(!r)return;
-if(r.type=="application/pdf"){let w=window.open();w.document.write(`<iframe src="${r.data}" style="width:100%;height:100%;border:0"></iframe>`)}
-else{let w=window.open();w.document.write(`<img src="${r.data}" style="max-width:100%;height:auto">`)}
-}
-
-function stock(a){
-a.innerHTML=`<h2>Product Stock</h2><div class="card"><h3>Add product</h3><div class="row"><input id="pn" placeholder="Product name"><input id="pq" type="number" placeholder="Quantity"><input id="pl" type="number" placeholder="Low-stock level"></div><button class="primary" onclick="addP()">Save product</button></div>
-<div class="card">${d.products.length?d.products.map((p,i)=>`<div class="item"><div class="row"><b>${esc(p.name)}</b><span class="badge">${p.qty} in stock</span></div><button class="secondary" onclick="d.products[${i}].qty++;save()">+1</button> <button class="secondary" onclick="d.products[${i}].qty=Math.max(0,d.products[${i}].qty-1);save()">-1</button> <button class="danger" onclick="del('products',${i})">Delete</button></div>`).join(""):'<div class="empty">No products yet.</div>'}</div>`
-}
-
+<div class="card"><h3>Expenses & receipts</h3>${d.expenses.length?d.expenses.slice().reverse().map((x,i)=>`<div class="item"><b>${money(x.amount)} · ${esc(x.category||"Other")}</b><br><span class="small">${esc(x.date)} · ${esc(x.description||"")}</span><br>${x.receipt?`<button class="secondary" onclick="viewReceipt(${d.expenses.indexOf(x)})">View receipt</button>`:`<span class="small">No receipt attached</span>`} <button class="danger" onclick="del('expenses',${d.expenses.indexOf(x)})">Delete</button></div>`).join(""):'<div class="empty">No expenses yet.</div>'}</div>
+<div class="card"><h3>Income</h3>${d.income.slice().reverse().slice(0,30).map(x=>`<div class="item"><b>${money(x.amount)}</b><br><span class="small">${esc(x.date)} · ${esc(x.client||"")} · ${esc(x.treatment||"")} · ${esc(x.payment||"")}</span><br><button class="danger" onclick="del('income',${d.income.indexOf(x)})">Delete</button></div>`).join("")||'<div class="empty">No income yet.</div>'}</div>`}
+async function addI(){if(!ia.value)return alert("Enter amount.");d.income.push({date:id.value,client:ic.value,treatment:it.value,amount:+ia.value,payment:ip.value});save()}
+function addE(){if(!ea.value)return alert("Enter amount.");let f=er.files[0];let x={date:ed.value,category:ec.value,description:ee.value,amount:+ea.value,receipt:null};if(f){let r=new FileReader();r.onload=()=>{x.receipt={name:f.name,type:f.type,data:r.result};d.expenses.push(x);save()};r.readAsDataURL(f)}else{d.expenses.push(x);save()}}
+function viewReceipt(i){let r=d.expenses[i].receipt;if(!r)return;if(r.type=="application/pdf"){let w=window.open();w.document.write(`<iframe src="${r.data}" style="width:100%;height:100%;border:0"></iframe>`)}else{let w=window.open();w.document.write(`<img src="${r.data}" style="max-width:100%;height:auto">`)}}
+function stock(a){a.innerHTML=`<h2>Product Stock</h2><div class="card"><h3>Add product</h3><div class="row"><input id="pn" placeholder="Product name"><input id="pq" type="number" placeholder="Quantity"><input id="pl" type="number" placeholder="Low-stock level"></div><button class="primary" onclick="addP()">Save product</button></div><div class="card">${d.products.length?d.products.map((p,i)=>`<div class="item"><div class="row"><b>${esc(p.name)}</b><span class="badge">${p.qty} in stock</span></div><button class="secondary" onclick="d.products[${i}].qty++;save()">+1</button> <button class="secondary" onclick="d.products[${i}].qty=Math.max(0,d.products[${i}].qty-1);save()">-1</button> <button class="danger" onclick="del('products',${i})">Delete</button></div>`).join(""):'<div class="empty">No products yet.</div>'}</div>`}
 function addP(){if(!pn.value)return;d.products.push({name:pn.value,qty:+pq.value||0,low:+pl.value||2});save()}
-
-function more(a){
-a.innerHTML=`<h2>Settings & Tools</h2><div class="card"><h3>Monthly income target</h3><input id="tg" type="number" value="${d.target}"><button class="primary" onclick="d.target=+tg.value||0;save()">Save target</button></div>
+function more(a){a.innerHTML=`<h2>Settings & Tools</h2><div class="card"><h3>Monthly income target</h3><input id="tg" type="number" value="${d.target}"><button class="primary" onclick="d.target=+tg.value||0;save()">Save target</button></div>
 <div class="card"><h3>Treatments & prices</h3>${d.treatments.map((t,i)=>`<div class="item"><div class="row"><span>${esc(t[0])}</span><input type="number" value="${t[1]}" onchange="d.treatments[${i}][1]=+this.value;save()"></div></div>`).join("")}<div class="row"><input id="tn" placeholder="New treatment"><input id="tp" type="number" placeholder="Price"><button class="primary" onclick="addT()">Add</button></div></div>
 <div class="card"><h3>Backup</h3><p class="small">Receipts and invoices are included in the backup. Export regularly.</p><button class="primary" onclick="exportD()">Export backup</button> <button class="secondary" onclick="document.getElementById('imp').click()">Import backup</button><input id="imp" type="file" accept=".json" style="display:none" onchange="importD(event)"></div>
-<div class="card"><h3>About this version</h3><p class="small">V3 includes receipt/invoice attachments and automatic income for completed appointments.</p></div>`
-}
-
-function addT(){if(!tn.value)return;d.treatments.push([tn.value,+tp.value||0]);save()}
-function del(k,i){if(confirm("Delete this item?")){d[k].splice(i,1);save()}}
+<div class="card"><h3>About this version</h3><p class="small">V3 includes receipt/invoice attachments. Images and PDFs are stored locally in your app data and in exported backups.</p></div>`}
+function addT(){if(!tn.value)return;d.treatments.push([tn.value,+tp.value||0]);save()}function del(k,i){if(confirm("Delete this item?")){d[k].splice(i,1);save()}}
 function exportD(){let u=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="CHAN_Beauty_Lounge_Backup.json";a.click();URL.revokeObjectURL(u)}
 function importD(e){let r=new FileReader();r.onload=()=>{try{d=JSON.parse(r.result);save()}catch{alert("Invalid backup file")}};r.readAsText(e.target.files[0])}
-
 render();
 </script>
-<script>
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"))}
-</script>
-</body>
-</html>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));}</script>
+</body></html>
